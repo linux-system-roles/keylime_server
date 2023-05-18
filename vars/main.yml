@@ -4,12 +4,10 @@
 # You can override these by defining the same variable with a different
 # value in a platform/version specific file in vars/
 
-# Examples of non-distribution specific (generic) internal variables:
-__template_foo_config: foo.conf
-__template_packages: []
-__template_services: []
-# ansible_facts required by the role
-__template_required_facts:
+__keylime_server_packages: []
+__keylime_server_services: []
+
+__keylime_server_required_facts:
   - distribution
   - distribution_major_version
   - distribution_version

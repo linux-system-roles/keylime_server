@@ -3,7 +3,8 @@
   setup:
     gather_subset: min
   when: not ansible_facts.keys() | list |
-    intersect(__template_required_facts) == __template_required_facts
+    intersect(__keylime_server_required_facts) ==
+    __keylime_server_required_facts
 
 - name: Set platform/version specific variables
   include_vars: "{{ __vars_file }}"
