@@ -1,25 +1,32 @@
 # SPDX-License-Identifier: MIT
 ---
+
 - name: Set platform/version specific variables
   include_tasks: tasks/set_vars.yml
 
-# Examples of some tasks:
 - name: Ensure required packages are installed
   package:
-    name: "{{ __template_packages }}"
+    name: "{{ __keylime_server_packages }}"
     state: present
+
+- name: Generate keylime legacy configuration
+  template:
+    src: keylime.conf.j2
+    dest: /etc/keylime.conf
+    backup: false
+    mode: "0600"
+    owner: "{{ __keylime_server_user }}"
+    group: "{{ __keylime_server_group }}"
+  notify: Restart services
+  when: __keylime_server_legacy_config | bool
+
+- name: Generate keylime configuration
+  include_tasks: keylime-config.yml
+  when: not __keylime_server_legacy_config
 
 - name: Ensure required services are enabled and started
   service:
     name: "{{ item }}"
     state: started
     enabled: true
-  loop: "{{ __template_services }}"
-
-- name: Generate /etc/{{ __template_foo_config }}
-  template:
-    src: "{{ __template_foo_config }}.j2"
-    dest: /etc/{{ __template_foo_config }}
-    backup: true
-    mode: 0400
-  notify: Handler for template to restart services
+  loop: "{{ __keylime_server_services }}"

@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Example template role invocation
+- name: Example keylime_server role invocation
   hosts: all
   vars:
-    template_foo: example variable value
-    template_bar: false
+    keylime_server_verifier_ip: "{{ ansible_host }}"
+    keylime_server_registrar_ip: "{{ ansible_host }}"
+
   roles:
-    - linux-system-roles.template
+    - linux-system-roles.keylime_server
