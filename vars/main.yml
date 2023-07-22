@@ -20,9 +20,8 @@ __keylime_server_packages:
   - keylime-verifier
   - keylime-registrar
 
-__keylime_server_services:
-  - keylime_verifier
-  - keylime_registrar
+__keylime_server_verifier_service: keylime_verifier
+__keylime_server_registrar_service: keylime_registrar
 
 __keylime_server_user: keylime
 __keylime_server_group: keylime

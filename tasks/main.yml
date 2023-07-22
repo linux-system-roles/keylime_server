@@ -24,9 +24,19 @@
   include_tasks: keylime-config.yml
   when: not __keylime_server_legacy_config
 
-- name: Ensure required services are enabled and started
+- name: Ensure the verifier is enabled and started
   service:
-    name: "{{ item }}"
+    name: "{{ __keylime_server_verifier_service }}"
     state: started
     enabled: true
-  loop: "{{ __keylime_server_services }}"
+
+- name: Make sure the verifier is up and running
+  ansible.builtin.wait_for:
+    host: "{{ keylime_server_verifier_ip }}"
+    port: "{{ keylime_server_verifier_port }}"
+
+- name: Ensure the registrar is enabled and started
+  service:
+    name: "{{ __keylime_server_registrar_service }}"
+    state: started
+    enabled: true
