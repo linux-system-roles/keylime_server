@@ -12,7 +12,11 @@ keylime_server_verifier_port: 8881
 #
 # If set as 'sqlite' keyword, will use the configuration set by the file located
 # at "/var/lib/keylime/cv_data.sqlite".
-keylime_server_verifier_database_url: sqlite
+# When using systems with legacy Keylime, e.g. Fedora 36 and/or Fedora 37,
+# keylime_server_verifier_database_url should be set to an empty string,
+# if one wants to use default sqlite configuration.
+keylime_server_verifier_database_url: |
+  {{ __keylime_server_verifier_default_db }}
 keylime_server_verifier_tls_dir: generate
 
 # If set as 'default', 'server-private.pem' is used as value.
@@ -79,7 +83,11 @@ keylime_server_registrar_port: 8890
 #
 # If set as 'sqlite' keyword, will use the configuration set by the file located
 # at "/var/lib/keylime/reg_data.sqlite".
-keylime_server_registrar_database_url: sqlite
+# When using systems with legacy Keylime, e.g. Fedora 36 and/or Fedora 37,
+# keylime_server_registrar_database_url should be set to an empty string,
+# if one wants to use default sqlite configuration.
+keylime_server_registrar_database_url: |
+  {{ __keylime_server_registrar_default_db }}
 
 # If set as 'default', share the files with the verifier by using the
 # 'var/lib/keylime/cv_ca' directory, which should contain the files indicated by

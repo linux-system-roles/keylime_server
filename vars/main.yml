@@ -26,6 +26,10 @@ __keylime_server_registrar_service: keylime_registrar
 __keylime_server_user: keylime
 __keylime_server_group: keylime
 
+# Default database configuration.
+__keylime_server_verifier_default_db: sqlite
+__keylime_server_registrar_default_db: sqlite
+
 __keylime_server_verifier_snippet_dir: /etc/keylime/verifier.conf.d
 __keylime_server_registrar_snippet_dir: /etc/keylime/registrar.conf.d
 
