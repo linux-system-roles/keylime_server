@@ -8,6 +8,8 @@
   package:
     name: "{{ __keylime_server_packages }}"
     state: present
+    use: "{{ (__keylime_server_is_ostree | d(false)) |
+             ternary('ansible.posix.rhel_rpm_ostree', omit) }}"
 
 - name: Generate keylime legacy configuration
   template:
