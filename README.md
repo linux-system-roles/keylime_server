@@ -9,6 +9,20 @@ Ansible role for configuring and deploying the server components for Keylime Rem
 * RHEL-9.1+, CentOS Stream 9.1+
 * Fedora 36+
 
+## Requirements
+
+See below
+
+### Collection requirements
+
+If you want to manage `rpm-ostree` systems with this role, you will need to
+install additional collections.  Please run the following command line to
+install the collection.
+
+```bash
+ansible-galaxy collection install -vv -r meta/collection-requirements.yml
+```
+
 ## Role Variables
 
 These are the variables that can be passed to the role.  *NOTE:* Use Ansible Vault to encrypt passwords, keys, and other secrets.
@@ -48,6 +62,10 @@ These are the variables that can be passed to the role.  *NOTE:* Use Ansible Vau
   roles:
     - linux-system-roles.keylime_server
 ```
+
+## rpm-ostree
+
+See README-ostree.md
 
 ## License
 
