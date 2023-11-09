@@ -5,15 +5,8 @@ environment:
   DOCKERFILE_SYSTEMD: Dockerfile.systemd
 
 context:
-  swtpm: no
+  swtpm: yes
   agent: rust
-
-provision:
-  hardware:
-    tpm:
-      version: "2"
-    virtualization:
-      is-virtualized: true
 
 prepare:
   - how: shell
@@ -33,6 +26,7 @@ discover:
     url: https://github.com/RedHat-SP-Security/keylime-tests
     ref: rhel-9-main
     test:
+      - /setup/configure_swtpm_device
       - /setup/configure_kernel_ima_module/ima_policy_simple
   - name: Run_keylime_server_role_tests
     how: fmf
