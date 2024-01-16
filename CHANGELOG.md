@@ -1,6 +1,18 @@
 Changelog
 =========
 
+[1.1.2] - 2024-01-16
+--------------------
+
+### Bug Fixes
+
+- fix: add timeout for registrar service - use 30 second timeout for registrar and verifier
+
+### Other Changes
+
+- ci: support ansible-lint and ansible-test 2.16 (#31)
+- ci: Use supported ansible-lint action; run ansible-lint against the collection (#32)
+
 [1.1.1] - 2023-12-08
 --------------------
 
