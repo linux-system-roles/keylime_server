@@ -36,9 +36,16 @@
   ansible.builtin.wait_for:
     host: "{{ keylime_server_verifier_ip }}"
     port: "{{ keylime_server_verifier_port }}"
+    timeout: "{{ __keylime_service_timeout }}"
 
 - name: Ensure the registrar is enabled and started
   service:
     name: "{{ __keylime_server_registrar_service }}"
     state: started
     enabled: true
+
+- name: Make sure the registrar is up and running
+  ansible.builtin.wait_for:
+    host: "{{ keylime_server_registrar_ip }}"
+    port: "{{ keylime_server_registrar_port }}"
+    timeout: "{{ __keylime_service_timeout }}"

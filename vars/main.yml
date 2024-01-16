@@ -40,3 +40,7 @@ __keylime_server_verifier_keys_certs_config: verifier-keys-certs.conf
 __keylime_server_registrar_ip_config: registrar-ip.conf
 __keylime_server_registrar_database_config: registrar-database.conf
 __keylime_server_registrar_keys_certs_config: registrar-keys-certs.conf
+
+# time, in seconds, to wait for the verifier and registrar
+# services to become available
+__keylime_service_timeout: 30
