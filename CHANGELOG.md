@@ -1,6 +1,21 @@
 Changelog
 =========
 
+[1.1.6] - 2024-10-30
+--------------------
+
+### Other Changes
+
+- ci: Add tft plan and workflow (#48)
+- ci: Update fmf plan to add a separate job to prepare managed nodes (#50)
+- ci: Bump sclorg/testing-farm-as-github-action from 2 to 3 (#51)
+- ci: Add workflow for ci_test bad, use remote fmf plan (#52)
+- ci: Fix missing slash in ARTIFACTS_URL (#53)
+- ci: Add tags to TF workflow, allow more [citest bad] formats (#54)
+- ci: ansible-test action now requires ansible-core version (#55)
+- ci: add YAML header to github action workflow files (#56)
+- refactor: Use vars/RedHat_N.yml symlink for CentOS, Rocky, Alma wherever possible (#58)
+
 [1.1.5] - 2024-07-02
 --------------------
 
