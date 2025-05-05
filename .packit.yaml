@@ -11,3 +11,7 @@ jobs:
         - tmt:
             context:
               target_PR_branch: "main"
+
+      settings:
+        pipeline:
+          type: "tmt-multihost"
