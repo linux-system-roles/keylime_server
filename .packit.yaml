@@ -9,5 +9,9 @@ jobs:
     tf_extra_params:
       environments:
         - tmt:
-          context:
-            target_PR_branch: "main"
+            context:
+              target_PR_branch: "main"
+
+      settings:
+        pipeline:
+          type: "tmt-multihost"
