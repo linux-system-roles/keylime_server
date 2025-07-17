@@ -57,6 +57,7 @@ adjust:
     prepare+:
       - how: feature
         epel: enabled
+        order: 10
 
 execute:
     how: tmt
