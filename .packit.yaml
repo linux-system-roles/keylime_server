@@ -6,6 +6,7 @@ jobs:
       - centos-stream-9-x86_64
       - centos-stream-10-x86_64
     skip_build: true
+    tmt_plan: packit-ci
     tf_extra_params:
       environments:
         - tmt:
