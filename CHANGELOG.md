@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[1.2.0] - 2025-07-24
+--------------------
+
+### New Features
+
+- feat: add openSUSE Leap 15.6 to integration test matrix (#82)
+
+### Other Changes
+
+- ci(packit): fix extra parameters for TF (#75)
+
 [1.1.8] - 2025-07-02
 --------------------
 
