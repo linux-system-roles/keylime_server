@@ -1,6 +1,13 @@
 Changelog
 =========
 
+[1.2.1] - 2025-08-01
+--------------------
+
+### Bug Fixes
+
+- fix: Add SLES_16 var file with required packages and ensure pyasn1 (#84)
+
 [1.2.0] - 2025-07-24
 --------------------
 
