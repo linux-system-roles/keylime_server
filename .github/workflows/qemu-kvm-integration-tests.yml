@@ -41,7 +41,6 @@ jobs:
           - { image: "fedora-42", env: "container-ansible-core-2.17" }
           - { image: "fedora-41-bootc", env: "container-ansible-core-2.17" }
           - { image: "fedora-42-bootc", env: "container-ansible-core-2.17" }
-          - { image: "leap-15.6", env: "qemu-ansible-core-2.18" }
 
     env:
       TOX_ARGS: "--skip-tags tests::infiniband,tests::nvme,tests::scsi"
@@ -63,7 +62,6 @@ jobs:
           case "$image" in
           centos-*) platform=el; platform_version=el"${image#centos-}" ;;
           fedora-*) platform=fedora; platform_version="${image/-/}" ;;
-          leap-*) platform=leap; platform_version="${image}" ;;
           esac
           supported=
           if yq -e '.galaxy_info.galaxy_tags[] | select(. == "'${platform_version}'" or . == "'${platform}'")' meta/main.yml; then
@@ -107,7 +105,7 @@ jobs:
           python3 -m pip install --upgrade pip
           sudo apt update
           sudo apt install -y --no-install-recommends git ansible-core genisoimage qemu-system-x86
-          pip3 install "git+https://github.com/linux-system-roles/tox-lsr@3.11.0"
+          pip3 install "git+https://github.com/linux-system-roles/tox-lsr@3.11.1"
 
       # HACK: Drop this when moving this workflow to 26.04 LTS
       - name: Update podman to 5.x for compatibility with bootc-image-builder's podman 5
@@ -201,7 +199,7 @@ jobs:
               if tox -e "$env" -- --image-file "$(pwd)/$image_file" \
                      --log-level debug $TOX_ARGS \
                      --lsr-report-errors-url DEFAULT \
-                     -e __bootc_validation=true \
+                     -e "__bootc_validation: true" \
                      -- "$test" >out 2>&1; then
                   mv out "${test}-PASS.log"
               else
