@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[1.2.3] - 2026-01-06
+--------------------
+
+### Other Changes
+
+- ci: bump gha checkout from v5 to v6 (#101)
+- ci: bump actions/checkout from 5 to 6 (#102)
+- ci: add qemu tests for Fedora 43, drop Fedora 41 (#103)
+- ci: bump actions/upload-artifact from 5 to 6 (#104)
+- docs: fix copyright in license (#105)
+
 [1.2.2] - 2025-11-17
 --------------------
 
