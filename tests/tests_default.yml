@@ -2,14 +2,11 @@
 ---
 - name: Ensure that the role runs with default parameters
   hosts: all
-  gather_facts: false  # test that role works in this case
-  roles:
-    - linux-system-roles.keylime_server
   tasks:
-    - name: Run the role
-      include_role:
-        name: linux-system-roles.keylime_server
-        public: true
+    - name: Run the role with public role variables
+      include_tasks: tasks/run_role_with_clear_facts.yml
+      vars:
+        __sr_public: true
 
     - name: Check header for ansible_managed, fingerprint - legacy
       include_tasks: tasks/check_header.yml
@@ -17,7 +14,6 @@
         __file: /etc/keylime.conf
         __fingerprint: system_role:keylime_server
       when: __keylime_server_legacy_config
-
 
     - name: Check header for ansible_managed, fingerprint
       include_tasks: tasks/check_header.yml
