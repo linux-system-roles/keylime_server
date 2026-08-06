@@ -16,6 +16,8 @@ __keylime_server_required_facts:
 __keylime_server_required_facts_subsets: "{{ ['!all', '!min'] +
   __keylime_server_required_facts }}"
 
+__keylime_server_write_log_file: false
+
 __keylime_server_packages:
   - keylime-verifier
   - keylime-registrar
