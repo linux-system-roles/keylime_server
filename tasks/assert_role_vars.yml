@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: MIT
+---
+# The `| int` filter silently coerces non-numeric strings to 0 (e.g. on
+# ansible-core < 2.11, where meta/argument_specs.yml type: int is not
+# enforced). Explicitly validate the value is int-like before relying on
+# `| int` for the range checks below, so bad input fails loudly instead of
+# being coerced to 0 and passing the range check.
+- name: Assert keylime_server_verifier_port is a valid integer
+  ansible.builtin.assert:
+    that:
+      - >-
+        (keylime_server_verifier_port | type_debug == 'int')
+        or (keylime_server_verifier_port | string | trim is match('^-?[0-9]+$'))
+    fail_msg: >-
+      keylime_server_verifier_port must be an integer, got
+      {{ keylime_server_verifier_port | type_debug }}
+      ({{ keylime_server_verifier_port }})
+
+- name: Assert keylime_server_verifier_port is within the valid port range
+  ansible.builtin.assert:
+    that:
+      - keylime_server_verifier_port | int >= 0
+      - keylime_server_verifier_port | int <= 65535
+    fail_msg: >-
+      keylime_server_verifier_port must be between 0 and 65535 inclusive,
+      got {{ keylime_server_verifier_port }}
+
+- name: Assert keylime_server_registrar_port is a valid integer
+  ansible.builtin.assert:
+    that:
+      - >-
+        (keylime_server_registrar_port | type_debug == 'int')
+        or (keylime_server_registrar_port | string | trim is match('^-?[0-9]+$'))
+    fail_msg: >-
+      keylime_server_registrar_port must be an integer, got
+      {{ keylime_server_registrar_port | type_debug }}
+      ({{ keylime_server_registrar_port }})
+
+- name: Assert keylime_server_registrar_port is within the valid port range
+  ansible.builtin.assert:
+    that:
+      - keylime_server_registrar_port | int >= 0
+      - keylime_server_registrar_port | int <= 65535
+    fail_msg: >-
+      keylime_server_registrar_port must be between 0 and 65535 inclusive,
+      got {{ keylime_server_registrar_port }}
+
+- name: Assert keylime_server_verifier_trusted_client_ca is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        keylime_server_verifier_trusted_client_ca is string
+        or (keylime_server_verifier_trusted_client_ca is sequence
+            and keylime_server_verifier_trusted_client_ca is not mapping
+            and keylime_server_verifier_trusted_client_ca
+            | reject('string') | list | length == 0)
+    fail_msg: >-
+      keylime_server_verifier_trusted_client_ca must be a string or list of
+      strings, got
+      {{ keylime_server_verifier_trusted_client_ca | type_debug }}
+  when: keylime_server_verifier_trusted_client_ca is defined
+
+- name: Assert keylime_server_verifier_trusted_server_ca is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        keylime_server_verifier_trusted_server_ca is string
+        or (keylime_server_verifier_trusted_server_ca is sequence
+            and keylime_server_verifier_trusted_server_ca is not mapping
+            and keylime_server_verifier_trusted_server_ca
+            | reject('string') | list | length == 0)
+    fail_msg: >-
+      keylime_server_verifier_trusted_server_ca must be a string or list of
+      strings, got
+      {{ keylime_server_verifier_trusted_server_ca | type_debug }}
+  when: keylime_server_verifier_trusted_server_ca is defined
+
+- name: Assert keylime_server_registrar_trusted_client_ca is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        keylime_server_registrar_trusted_client_ca is string
+        or (keylime_server_registrar_trusted_client_ca is sequence
+            and keylime_server_registrar_trusted_client_ca is not mapping
+            and keylime_server_registrar_trusted_client_ca
+            | reject('string') | list | length == 0)
+    fail_msg: >-
+      keylime_server_registrar_trusted_client_ca must be a string or list
+      of strings, got
+      {{ keylime_server_registrar_trusted_client_ca | type_debug }}
+  when: keylime_server_registrar_trusted_client_ca is defined

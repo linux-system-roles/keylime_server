@@ -1,0 +1,259 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Verify invalid parameters are rejected
+  hosts: all
+  tasks:
+    - name: Run invalid input tests
+      block:
+        # ====================================================
+        # Section 1: Verify role works with valid defaults
+        # ====================================================
+        - name: Run role with valid defaults
+          ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+
+        - name: Mark valid defaults succeeded
+          ansible.builtin.set_fact:
+            __valid_defaults_succeeded: true
+
+        - name: Assert role completed with valid defaults
+          ansible.builtin.assert:
+            that:
+              - __valid_defaults_succeeded | default(false)
+            fail_msg: >-
+              Role should succeed with default parameters
+
+        # ====================================================
+        # Section 2: argument_specs validation (Ansible 2.11+)
+        # ====================================================
+        - name: Run argument specs validation tests
+          when: ansible_version.full is version("2.11", ">=")
+          block:
+            # --- Test: invalid type for keylime_server_verifier_port ---
+            - name: Argument specs reject non-integer keylime_server_verifier_port
+              block:
+                - name: Run role with keylime_server_verifier_port as a non-numeric string
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    keylime_server_verifier_port: not_an_int
+              rescue:
+                - name: Mark invalid keylime_server_verifier_port type rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_verifier_port_type_failed: true
+
+            - name: Assert invalid keylime_server_verifier_port type was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_verifier_port_type_failed | default(false)
+                fail_msg: >-
+                  meta/argument_specs should reject keylime_server_verifier_port
+                  values that are not integers
+
+            # --- Test: invalid type for keylime_server_registrar_port ---
+            - name: Argument specs reject non-integer keylime_server_registrar_port
+              block:
+                - name: Run role with keylime_server_registrar_port as a non-numeric string
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    keylime_server_registrar_port: not_an_int
+              rescue:
+                - name: Mark invalid keylime_server_registrar_port type rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_registrar_port_type_failed: true
+
+            - name: Assert invalid keylime_server_registrar_port type was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_registrar_port_type_failed | default(false)
+                fail_msg: >-
+                  meta/argument_specs should reject keylime_server_registrar_port
+                  values that are not integers
+
+        # ====================================================
+        # Section 3: assert_role_vars validation (all versions)
+        # ====================================================
+
+        # --- Test: keylime_server_verifier_port out of range ---
+        - name: Assert rejects keylime_server_verifier_port above 65535
+          block:
+            - name: Run role with keylime_server_verifier_port above the maximum
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_verifier_port: 70000
+          rescue:
+            - name: Mark keylime_server_verifier_port range rejected
+              ansible.builtin.set_fact:
+                __invalid_input_verifier_port_range_failed: true
+
+        - name: Assert keylime_server_verifier_port above 65535 was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_verifier_port_range_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_verifier_port
+              values greater than 65535
+
+        # --- Test: keylime_server_verifier_port below the minimum ---
+        - name: Assert rejects keylime_server_verifier_port below 0
+          block:
+            - name: Run role with keylime_server_verifier_port below the minimum
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_verifier_port: -1
+          rescue:
+            - name: Mark keylime_server_verifier_port lower range rejected
+              ansible.builtin.set_fact:
+                __invalid_input_verifier_port_low_range_failed: true
+
+        - name: Assert keylime_server_verifier_port below 0 was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_verifier_port_low_range_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_verifier_port
+              values less than 0
+
+        # --- Test: keylime_server_registrar_port out of range ---
+        - name: Assert rejects keylime_server_registrar_port above 65535
+          block:
+            - name: Run role with keylime_server_registrar_port above the maximum
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_registrar_port: 70000
+          rescue:
+            - name: Mark keylime_server_registrar_port range rejected
+              ansible.builtin.set_fact:
+                __invalid_input_registrar_port_range_failed: true
+
+        - name: Assert keylime_server_registrar_port above 65535 was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_registrar_port_range_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_registrar_port
+              values greater than 65535
+
+        # --- Test: keylime_server_registrar_port below the minimum ---
+        - name: Assert rejects keylime_server_registrar_port below 0
+          block:
+            - name: Run role with keylime_server_registrar_port below the minimum
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_registrar_port: -1
+          rescue:
+            - name: Mark keylime_server_registrar_port lower range rejected
+              ansible.builtin.set_fact:
+                __invalid_input_registrar_port_low_range_failed: true
+
+        - name: Assert keylime_server_registrar_port below 0 was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_registrar_port_low_range_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_registrar_port
+              values less than 0
+
+        # --- Test: keylime_server_verifier_trusted_client_ca wrong type ---
+        - name: Assert rejects keylime_server_verifier_trusted_client_ca as an integer
+          block:
+            - name: Run role with keylime_server_verifier_trusted_client_ca as an integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_verifier_trusted_client_ca: 12345
+          rescue:
+            - name: Mark keylime_server_verifier_trusted_client_ca type rejected
+              ansible.builtin.set_fact:
+                __invalid_input_verifier_trusted_client_ca_type_failed: true
+
+        - name: Assert keylime_server_verifier_trusted_client_ca as integer was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_verifier_trusted_client_ca_type_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_verifier_trusted_client_ca
+              when given a value that is not a string or list of strings
+
+        # --- Test: keylime_server_verifier_trusted_client_ca list with bad element ---
+        - name: Assert rejects keylime_server_verifier_trusted_client_ca list with non-string element
+          block:
+            - name: Run role with keylime_server_verifier_trusted_client_ca list containing an integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_verifier_trusted_client_ca:
+                  - cacert.crt
+                  - 42
+          rescue:
+            - name: Mark keylime_server_verifier_trusted_client_ca element rejected
+              ansible.builtin.set_fact:
+                __invalid_input_verifier_trusted_client_ca_element_failed: true
+
+        - name: Assert keylime_server_verifier_trusted_client_ca list with non-string element was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_verifier_trusted_client_ca_element_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_verifier_trusted_client_ca
+              lists containing non-string elements
+
+        # --- Test: keylime_server_verifier_trusted_server_ca wrong type ---
+        - name: Assert rejects keylime_server_verifier_trusted_server_ca as a boolean
+          block:
+            - name: Run role with keylime_server_verifier_trusted_server_ca as a boolean
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_verifier_trusted_server_ca: true
+          rescue:
+            - name: Mark keylime_server_verifier_trusted_server_ca type rejected
+              ansible.builtin.set_fact:
+                __invalid_input_verifier_trusted_server_ca_type_failed: true
+
+        - name: Assert keylime_server_verifier_trusted_server_ca as boolean was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_verifier_trusted_server_ca_type_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_verifier_trusted_server_ca
+              when given a value that is not a string or list of strings
+
+        # --- Test: keylime_server_registrar_trusted_client_ca wrong type ---
+        - name: Assert rejects keylime_server_registrar_trusted_client_ca as an integer
+          block:
+            - name: Run role with keylime_server_registrar_trusted_client_ca as an integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                keylime_server_registrar_trusted_client_ca: 12345
+          rescue:
+            - name: Mark keylime_server_registrar_trusted_client_ca type rejected
+              ansible.builtin.set_fact:
+                __invalid_input_registrar_trusted_client_ca_type_failed: true
+
+        - name: Assert keylime_server_registrar_trusted_client_ca as integer was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_registrar_trusted_client_ca_type_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject keylime_server_registrar_trusted_client_ca
+              when given a value that is not a string or list of strings
+
+      always:
+        - name: Clear test facts
+          ansible.builtin.set_fact:
+            __valid_defaults_succeeded:
+            __invalid_input_verifier_port_type_failed:
+            __invalid_input_registrar_port_type_failed:
+            __invalid_input_verifier_port_range_failed:
+            __invalid_input_verifier_port_low_range_failed:
+            __invalid_input_registrar_port_range_failed:
+            __invalid_input_registrar_port_low_range_failed:
+            __invalid_input_verifier_trusted_client_ca_type_failed:
+            __invalid_input_verifier_trusted_client_ca_element_failed:
+            __invalid_input_verifier_trusted_server_ca_type_failed:
+            __invalid_input_registrar_trusted_client_ca_type_failed:
+          tags: tests::cleanup
