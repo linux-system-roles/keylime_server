@@ -1,0 +1,192 @@
+# SPDX-License-Identifier: MIT
+---
+argument_specs:
+  main:
+    short_description: The keylime_server role.
+    description: >
+      The keylime_server role allows you to install and configure the
+      server components of Keylime Remote Attestation: the verifier and
+      the registrar.
+
+      This role will install the necessary packages, generate the
+      verifier and registrar configuration, and ensure that both
+      services are enabled, started, and reachable, as specified by the
+      `keylime_server_verifier_*` and `keylime_server_registrar_*`
+      variables.
+    options:
+      keylime_server_verifier_ip:
+        type: str
+        default: 127.0.0.1
+        description: >
+          The IP address of the Keylime verifier service.
+      keylime_server_verifier_port:
+        type: int
+        default: 8881
+        description: >
+          The port used by the Keylime verifier service.
+      keylime_server_verifier_database_url:
+        type: str
+        default: sqlite
+        description: >
+          The database connection URL for the verifier. Accepts a full
+          SQLAlchemy database URL such as
+          `mysql+pymysql://keylime:keylime@keylime_db:3306/verifier?charset=utf8`,
+          or the keyword `sqlite` to use the default SQLite database
+          located at `/var/lib/keylime/cv_data.sqlite`. On systems with
+          legacy Keylime, such as Fedora 36 and Fedora 37, set this to
+          an empty string to use the default SQLite configuration.
+      keylime_server_verifier_tls_dir:
+        type: str
+        default: generate
+        description: >
+          The directory used to store the verifier TLS keys and
+          certificates. Set to `generate` to automatically generate a
+          CA, keys, and certificates in the `/var/lib/keylime/cv_ca`
+          directory if they do not already exist. Set to `default` to
+          use the `/var/lib/keylime/cv_ca` directory, which must
+          already contain the files referenced by
+          `keylime_server_verifier_server_key`,
+          `keylime_server_verifier_server_cert`,
+          `keylime_server_verifier_client_key`,
+          `keylime_server_verifier_client_cert`,
+          `keylime_server_verifier_trusted_client_ca`, and
+          `keylime_server_verifier_trusted_server_ca`.
+      keylime_server_verifier_server_key:
+        type: str
+        default: default
+        description: >
+          The name of the file containing the Keylime verifier server
+          private key. The file is stored in the directory set in
+          `keylime_server_verifier_tls_dir`. Set to `default` to use
+          `server-private.pem`.
+      keylime_server_verifier_server_key_passphrase:
+        type: str
+        default: default
+        description: >
+          The password used to decrypt the verifier server private key
+          file. When `keylime_server_verifier_tls_dir` is set to
+          `generate`, this password is also used to protect the
+          generated server private key. Leave empty to use an
+          unencrypted private key.
+      keylime_server_verifier_server_cert:
+        type: str
+        default: default
+        description: >
+          The name of the file containing the Keylime verifier server
+          certificate. The file is stored in the directory set in
+          `keylime_server_verifier_tls_dir`. Set to `default` to use
+          `server-cert.crt`.
+      keylime_server_verifier_trusted_client_ca:
+        type: raw
+        default: default
+        description: >
+          A trusted client CA certificate file name, or a list of
+          trusted client CA certificate file names. The files are
+          stored in the directory set in
+          `keylime_server_verifier_tls_dir`. Set to `default` to use
+          `[cacert.crt]`.
+      keylime_server_verifier_client_key:
+        type: str
+        default: default
+        description: >
+          The name of the file containing the Keylime verifier client
+          private key. The file is stored in the directory set in
+          `keylime_server_verifier_tls_dir`. This private key is used
+          by the Keylime verifier to connect to the other services
+          using TLS. Set to `default` to use `client-private.pem`.
+      keylime_server_verifier_client_key_passphrase:
+        type: str
+        default: default
+        description: >
+          The password used to decrypt the verifier client private key
+          file. When `keylime_server_verifier_tls_dir` is set to
+          `generate`, this password is also used to protect the
+          generated client private key. Leave empty to use an
+          unencrypted private key.
+      keylime_server_verifier_client_cert:
+        type: str
+        default: default
+        description: >
+          The name of the file containing the Keylime verifier client
+          certificate. The file is stored in the directory set in
+          `keylime_server_verifier_tls_dir`. This certificate is used
+          by the Keylime verifier to connect to the other services
+          using TLS. Set to `default` to use `client-cert.crt`.
+      keylime_server_verifier_trusted_server_ca:
+        type: raw
+        default: default
+        description: >
+          A trusted server CA certificate file name, or a list of
+          trusted server CA certificate file names. The files are
+          stored in the directory set in
+          `keylime_server_verifier_tls_dir`. Set to `default` to use
+          `[cacert.crt]`.
+      keylime_server_registrar_ip:
+        type: str
+        default: 127.0.0.1
+        description: >
+          The IP address of the Keylime registrar service.
+      keylime_server_registrar_port:
+        type: int
+        default: 8890
+        description: >
+          The port used by the Keylime registrar service.
+      keylime_server_registrar_database_url:
+        type: str
+        default: sqlite
+        description: >
+          The database connection URL for the registrar. Accepts a
+          full SQLAlchemy database URL such as
+          `mysql+pymysql://keylime:keylime@keylime_db:3306/registrar?charset=utf8`,
+          or the keyword `sqlite` to use the default SQLite database
+          located at `/var/lib/keylime/reg_data.sqlite`. On systems
+          with legacy Keylime, such as Fedora 36 and Fedora 37, set
+          this to an empty string to use the default SQLite
+          configuration.
+      keylime_server_registrar_tls_dir:
+        type: str
+        default: default
+        description: >
+          The directory used to store the registrar TLS keys and
+          certificates. Set to `generate` to automatically generate a
+          CA, keys, and certificates in the `/var/lib/keylime/reg_ca`
+          directory if they do not already exist. Set to `default` to
+          share files with the verifier by using the
+          `/var/lib/keylime/cv_ca` directory, which must contain the
+          files referenced by `keylime_server_registrar_server_key`,
+          `keylime_server_registrar_server_cert`, and
+          `keylime_server_registrar_trusted_client_ca`.
+      keylime_server_registrar_server_key:
+        type: str
+        default: default
+        description: >
+          The name of the file containing the Keylime registrar
+          server private key. The file is stored in the directory set
+          in `keylime_server_registrar_tls_dir`. Set to `default` to
+          use `server-private.pem`.
+      keylime_server_registrar_server_key_passphrase:
+        type: str
+        default: default
+        description: >
+          The password used to decrypt the registrar server private
+          key file. When `keylime_server_registrar_tls_dir` is set to
+          `generate`, this password is also used to protect the
+          generated server private key. Leave empty to use an
+          unencrypted private key.
+      keylime_server_registrar_server_cert:
+        type: str
+        default: default
+        description: >
+          The name of the file containing the Keylime registrar
+          server certificate. The file is stored in the directory set
+          in `keylime_server_registrar_tls_dir`. Set to `default` to
+          use `server-cert.crt`.
+      keylime_server_registrar_trusted_client_ca:
+        type: raw
+        default: default
+        description: >
+          A trusted client CA certificate file name, or a list of
+          trusted client CA certificate file names. The files are
+          stored in the directory set in
+          `keylime_server_registrar_tls_dir`. Set to `default` to use
+          `[cacert.crt]`.
