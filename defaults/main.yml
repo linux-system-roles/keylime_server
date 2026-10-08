@@ -102,3 +102,6 @@ keylime_server_registrar_server_key_passphrase: default
 keylime_server_registrar_server_cert: default
 # If set as 'default', the value is set as '[cacert.crt]'
 keylime_server_registrar_trusted_client_ca: default
+
+# Transactional update reboot: true reboots, false only notifies, null fails
+keylime_server_transactional_update_reboot_ok: null

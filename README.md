@@ -49,6 +49,7 @@ These are the variables that can be passed to the role.  *NOTE:* Use Ansible Vau
 `keylime_server_registrar_server_key_passphrase` | default | This option sets the password used to decrypt the private key file. If `keylime_server_registrar_tls_dir` is set to `generate`, this password will also be used to protect the generated server private key. If left empty, the private key will not be encrypted
 `keylime_server_registrar_server_cert` | default | The name of the file containing the Keylime registrar server certificate, and this file should be stored in the directory specified in the `keylime_server_registrar_tls_dir` option. If set as `default`, the value `server-cert.crt` is used
 `keylime_server_registrar_trusted_client_ca` | default | The list of trusted client CA certificates. The files in the list should be stored in the directory set in the `keylime_server_registrar_tls_dir` option. If set as `default`, the value is set as `[cacert.crt]`
+`keylime_server_transactional_update_reboot_ok` | null | This variable is used to handle reboots required by transactional updates. If a transactional update requires a reboot, the role will proceed with the reboot if set to `true`. If set to `false`, the role will notify the user that a reboot is required, allowing for custom handling of the reboot requirement. If this variable is not set, the role will fail to ensure the reboot requirement is not overlooked. For non-transactional update systems, this variable is ignored.
 
 ## Example Playbooks
 

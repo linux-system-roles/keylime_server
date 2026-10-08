@@ -13,6 +13,42 @@
     state: present
     use: "{{ (__keylime_server_is_ostree | d(false)) |
              ternary('ansible.posix.rhel_rpm_ostree', omit) }}"
+  register: __keylime_server_package_result
+
+# A staged install reports ok on re-runs, so ask rpm (by provides) if it is live.
+- name: Check whether the packages are live on a transactional update system
+  command:  # noqa command-instead-of-module
+    argv: "{{ ['rpm', '-q', '--whatprovides'] + __keylime_server_packages }}"
+  register: __keylime_server_packages_live
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: __keylime_server_is_transactional | d(false)
+
+- name: Handle reboot for transactional update systems
+  when:
+    - __keylime_server_is_transactional | d(false)
+    - __keylime_server_package_result is changed or
+      (__keylime_server_packages_live.rc | d(0)) != 0
+  block:
+    - name: Notify user that reboot is needed to apply changes
+      debug:
+        msg: >
+          Reboot required to apply changes due to transactional updates.
+
+    - name: Reboot transactional update systems
+      reboot:
+        msg: Rebooting the system to apply transactional update changes.
+      when:
+        - keylime_server_transactional_update_reboot_ok is not none
+        - keylime_server_transactional_update_reboot_ok | bool
+
+    - name: Fail if reboot is needed and not set
+      fail:
+        msg: >
+          Reboot is required but not allowed. Please set 'keylime_server_transactional_update_reboot_ok' to proceed.
+      when:
+        - keylime_server_transactional_update_reboot_ok is none
 
 - name: Generate keylime legacy configuration
   template:
