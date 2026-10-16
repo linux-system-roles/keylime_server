@@ -22,4 +22,5 @@ galaxy_info:
     - redhat
     - leap
     - sles
+    - sles16
 dependencies: []
