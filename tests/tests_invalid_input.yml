@@ -2,6 +2,13 @@
 ---
 - name: Verify invalid parameters are rejected
   hosts: all
+  vars:
+    __invalid_input_failure_messages: >-
+      {{ ([ansible_failed_result.msg | default('') | string,
+           ansible_failed_result.msg.msg | default('') | string]
+          + (ansible_failed_result.results | default([])
+             | map(attribute='msg') | map('default', '') | list))
+         | join(' ') }}
   tasks:
     - name: Run invalid input tests
       block:
@@ -39,6 +46,11 @@
                 - name: Mark invalid keylime_server_verifier_port type rejected
                   ansible.builtin.set_fact:
                     __invalid_input_verifier_port_type_failed: true
+                  when:
+                    - >-
+                      "argument 'keylime_server_verifier_port' is of type" in __invalid_input_failure_messages
+                    - >-
+                      'unable to convert to int' in __invalid_input_failure_messages
 
             - name: Assert invalid keylime_server_verifier_port type was rejected
               ansible.builtin.assert:
@@ -59,6 +71,11 @@
                 - name: Mark invalid keylime_server_registrar_port type rejected
                   ansible.builtin.set_fact:
                     __invalid_input_registrar_port_type_failed: true
+                  when:
+                    - >-
+                      "argument 'keylime_server_registrar_port' is of type" in __invalid_input_failure_messages
+                    - >-
+                      'unable to convert to int' in __invalid_input_failure_messages
 
             - name: Assert invalid keylime_server_registrar_port type was rejected
               ansible.builtin.assert:
@@ -83,6 +100,10 @@
             - name: Mark keylime_server_verifier_port range rejected
               ansible.builtin.set_fact:
                 __invalid_input_verifier_port_range_failed: true
+              when:
+                - >-
+                  'keylime_server_verifier_port must be between 0 and 65535 inclusive, got 70000'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_verifier_port above 65535 was rejected
           ansible.builtin.assert:
@@ -103,6 +124,10 @@
             - name: Mark keylime_server_verifier_port lower range rejected
               ansible.builtin.set_fact:
                 __invalid_input_verifier_port_low_range_failed: true
+              when:
+                - >-
+                  'keylime_server_verifier_port must be between 0 and 65535 inclusive, got -1'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_verifier_port below 0 was rejected
           ansible.builtin.assert:
@@ -123,6 +148,10 @@
             - name: Mark keylime_server_registrar_port range rejected
               ansible.builtin.set_fact:
                 __invalid_input_registrar_port_range_failed: true
+              when:
+                - >-
+                  'keylime_server_registrar_port must be between 0 and 65535 inclusive, got 70000'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_registrar_port above 65535 was rejected
           ansible.builtin.assert:
@@ -143,6 +172,10 @@
             - name: Mark keylime_server_registrar_port lower range rejected
               ansible.builtin.set_fact:
                 __invalid_input_registrar_port_low_range_failed: true
+              when:
+                - >-
+                  'keylime_server_registrar_port must be between 0 and 65535 inclusive, got -1'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_registrar_port below 0 was rejected
           ansible.builtin.assert:
@@ -163,6 +196,10 @@
             - name: Mark keylime_server_verifier_trusted_client_ca type rejected
               ansible.builtin.set_fact:
                 __invalid_input_verifier_trusted_client_ca_type_failed: true
+              when:
+                - >-
+                  'keylime_server_verifier_trusted_client_ca must be a string or list of strings, got int'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_verifier_trusted_client_ca as integer was rejected
           ansible.builtin.assert:
@@ -187,6 +224,10 @@
             - name: Mark keylime_server_verifier_trusted_client_ca element rejected
               ansible.builtin.set_fact:
                 __invalid_input_verifier_trusted_client_ca_element_failed: true
+              when:
+                - >-
+                  'keylime_server_verifier_trusted_client_ca must be a string or list of strings, got list'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_verifier_trusted_client_ca list with non-string element was rejected
           ansible.builtin.assert:
@@ -209,6 +250,10 @@
             - name: Mark keylime_server_verifier_trusted_server_ca type rejected
               ansible.builtin.set_fact:
                 __invalid_input_verifier_trusted_server_ca_type_failed: true
+              when:
+                - >-
+                  'keylime_server_verifier_trusted_server_ca must be a string or list of strings, got bool'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_verifier_trusted_server_ca as boolean was rejected
           ansible.builtin.assert:
@@ -231,6 +276,10 @@
             - name: Mark keylime_server_registrar_trusted_client_ca type rejected
               ansible.builtin.set_fact:
                 __invalid_input_registrar_trusted_client_ca_type_failed: true
+              when:
+                - >-
+                  'keylime_server_registrar_trusted_client_ca must be a string or list of strings, got int'
+                  in __invalid_input_failure_messages
 
         - name: Assert keylime_server_registrar_trusted_client_ca as integer was rejected
           ansible.builtin.assert:
