@@ -361,6 +361,18 @@ should be stored in the directory set in the
 <code>keylime_server_registrar_tls_dir</code> option. If set as
 <code>default</code>, the value is set as <code>[cacert.crt]</code></td>
 </tr>
+<tr>
+<td><code>keylime_server_transactional_update_reboot_ok</code></td>
+<td>null</td>
+<td>This variable is used to handle reboots required by transactional
+updates. If a transactional update requires a reboot, the role will
+proceed with the reboot if set to <code>true</code>. If set to
+<code>false</code>, the role will notify the user that a reboot is
+required, allowing for custom handling of the reboot requirement. If
+this variable is not set, the role will fail to ensure the reboot
+requirement is not overlooked. For non-transactional update systems,
+this variable is ignored.</td>
+</tr>
 </tbody>
 </table>
 <h1 id="example-playbooks">Example Playbooks</h1>
